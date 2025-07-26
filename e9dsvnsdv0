@@ -2673,7 +2673,6 @@ function Library:Configs(window)
         deselected = Color3.fromRGB(89, 91, 91),
     }
 
-    local Text
     local Tab = window:Tab({Name = "Settings"})
 
     do
@@ -2774,7 +2773,7 @@ function Library:Configs(window)
         ButtonContainer.Name = "ButtonContainer"
         ButtonContainer.Parent = ControlGui
         ButtonContainer.BackgroundColor3 = themes.visible_backgrounds
-        ButtonContainer.Size = UDim2.new(0, 180, 0, 240)
+        ButtonContainer.Size = UDim2.new(0, 180, 0, 150)
         ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
         ButtonContainer.AnchorPoint = Vector2.new(1, 0)
         ButtonContainer.BorderSizePixel = 0
@@ -2793,7 +2792,7 @@ function Library:Configs(window)
         Glow.BackgroundTransparency = 1
         Glow.BorderSizePixel = 0
 
-        local function makeButton(name, text, yPos, callback)
+        local function makeButton(name, text, yPos)
             local button = Instance.new("TextButton")
             button.Name = name
             button.Size = UDim2.new(0, 160, 0, 40)
@@ -2837,26 +2836,8 @@ function Library:Configs(window)
                 }):Play()
             end)
 
-            if callback then
-                button.MouseButton1Click:Connect(callback)
-            end
-
             return button
         end
-
-        local ToggleButton = makeButton("ToggleUIButton", "TOGGLE UI", 10, function()
-            Library.Items.Enabled = not Library.Items.Enabled
-            window.ToggleMenu(Library.Items.Enabled)
-        end)
-
-        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 60)
-        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 110)
-        local SaveButton = makeButton("SaveConfigButton", "SAVE CONFIG", 160, function()
-            if Flags["config_Name_text"] == "" then return end
-            writefile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg", Library:GetConfig())
-            Library:UpdateConfigList()
-            Notifications:Create({Name = "Saved Config (" .. Flags["config_Name_text"] .. ")"})
-        end)
 
         local sizeIncrement = 50
         local minWidth, minHeight = 400, 300
@@ -2880,12 +2861,29 @@ function Library:Configs(window)
             main.Position = UDim2.new(0.5, -newW / 2, 0.5, -newH / 2)
         end
 
+        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 10)
+        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 60)
+
+        local ToggleButton = makeButton("ToggleUIButton", "OPEN UI", 110)
+
         IncreaseButton.MouseButton1Click:Connect(function()
             adjustSize(sizeIncrement, sizeIncrement)
         end)
 
         DecreaseButton.MouseButton1Click:Connect(function()
             adjustSize(-sizeIncrement, -sizeIncrement)
+        end)
+
+        ToggleButton.MouseButton1Click:Connect(function()
+            if Library.Items.Enabled then
+                Library.Items.Enabled = false
+                window.ToggleMenu(false)
+                ToggleButton.Text = "OPEN UI"
+            else
+                Library.Items.Enabled = true
+                window.ToggleMenu(true)
+                ToggleButton.Text = "CLOSE UI"
+            end
         end)
 
         delay(2, function()
