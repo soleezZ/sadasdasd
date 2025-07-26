@@ -2676,7 +2676,6 @@ function Library:Configs(window)
     local Text
     local Tab = window:Tab({Name = "Settings"})
 
-    -- Left Side
     do
         local Section = Tab:Section({Name = "Main", Side = "Left"})
 
@@ -2725,11 +2724,9 @@ function Library:Configs(window)
         })
     end
 
-    -- Right Side
     do
         local Section = Tab:Section({Name = "Other", Side = "Right"})
 
-        -- Theme pickers
         local themeList = {
             {"Accent Color", "accent"},
             {"Window Outline", "window_outline"},
@@ -2748,7 +2745,6 @@ function Library:Configs(window)
             })
         end
 
-        -- Keybind for toggling menu
         window.Tweening = true
         Section:Label({Name = "Menu Bind"}):Keybind({
             Name = "Menu Bind",
@@ -2759,7 +2755,6 @@ function Library:Configs(window)
             Default = true
         })
 
-        -- Mobile Support Toggle
         local ControlGui = Instance.new("ScreenGui")
         ControlGui.Name = "InfernoControlGui"
         ControlGui.ResetOnSpawn = false
@@ -2775,12 +2770,11 @@ function Library:Configs(window)
             end
         })
 
-        -- Button Panel
         local ButtonContainer = Instance.new("Frame")
         ButtonContainer.Name = "ButtonContainer"
         ButtonContainer.Parent = ControlGui
         ButtonContainer.BackgroundColor3 = themes.visible_backgrounds
-        ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+        ButtonContainer.Size = UDim2.new(0, 180, 0, 240)
         ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
         ButtonContainer.AnchorPoint = Vector2.new(1, 0)
         ButtonContainer.BorderSizePixel = 0
@@ -2799,7 +2793,7 @@ function Library:Configs(window)
         Glow.BackgroundTransparency = 1
         Glow.BorderSizePixel = 0
 
-        local function makeButton(name, text, yPos)
+        local function makeButton(name, text, yPos, callback)
             local button = Instance.new("TextButton")
             button.Name = name
             button.Size = UDim2.new(0, 160, 0, 40)
@@ -2843,13 +2837,36 @@ function Library:Configs(window)
                 }):Play()
             end)
 
+            if callback then
+                button.MouseButton1Click:Connect(callback)
+            end
+
             return button
         end
 
-        local OpenButton = makeButton("OpenUIButton", "OPEN UI", 15)
-        local CloseButton = makeButton("CloseUIButton", "CLOSE UI", 65)
-        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 115)
-        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 165)
+        local OpenButton = makeButton("OpenUIButton", "OPEN UI", 10, function()
+            if not Library.Items.Enabled then
+                Library.Items.Enabled = true
+                window.ToggleMenu(true)
+            end
+        end)
+
+        local CloseButton = makeButton("CloseUIButton", "CLOSE UI", 60, function()
+            if Library.Items.Enabled then
+                Library.Items.Enabled = false
+                window.ToggleMenu(false)
+            end
+        end)
+
+        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 110)
+        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 160)
+
+        local SaveButton = makeButton("SaveConfigButton", "SAVE CONFIG", 210, function()
+            if Flags["config_Name_text"] == "" then return end
+            writefile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg", Library:GetConfig())
+            Library:UpdateConfigList()
+            Notifications:Create({Name = "Saved Config (" .. Flags["config_Name_text"] .. ")"})
+        end)
 
         local sizeIncrement = 50
         local minWidth, minHeight = 400, 300
@@ -2861,7 +2878,6 @@ function Library:Configs(window)
             for _, child in ipairs(Library.Items:GetDescendants()) do
                 if child.Name == "Window" then return child end
             end
-            warn("Could not find main window frame")
         end
 
         local function adjustSize(wChange, hChange)
@@ -2873,18 +2889,6 @@ function Library:Configs(window)
             main.Size = UDim2.new(0, newW, 0, newH)
             main.Position = UDim2.new(0.5, -newW / 2, 0.5, -newH / 2)
         end
-
-        OpenButton.MouseButton1Click:Connect(function()
-            if Library.Items.Enabled then return end
-            Library.Items.Enabled = true
-            window.ToggleMenu(true)
-        end)
-
-        CloseButton.MouseButton1Click:Connect(function()
-            if not Library.Items.Enabled then return end
-            Library.Items.Enabled = false
-            window.ToggleMenu(false)
-        end)
 
         IncreaseButton.MouseButton1Click:Connect(function()
             adjustSize(sizeIncrement, sizeIncrement)
@@ -2899,7 +2903,6 @@ function Library:Configs(window)
         end)
     end
 end
-
     --
 
     -- Notification Library
