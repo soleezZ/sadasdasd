@@ -2661,41 +2661,391 @@ Items.Input = Library:Create("TextBox", {
             return setmetatable(Cfg, Library)
         end
 
-        function Library:Configs(window) 
-            local Text;
-local Tab = window:Tab({
-    name = "Settings",
-    icon = "http://www.roblox.com/asset/?id=6031280882"
-})
+function Library:Configs(window) 
+    local Text
+    local Tab = window:Tab({Name = "Settings"})
 
-            local Section = Tab:Section({Name = "Main", Side = "Left"})
-            ConfigHolder = Section:Dropdown({Name = "Configs", Options = {"Report", "This", "Error", "To", "Finobe"}, Callback = function(option) if Text then Text.Set(option) end end, Flag = "config_Name_list"}); Library:UpdateConfigList()
-            Section:Textbox({Name = "Config Name:", Flag = "config_Name_text", default = ""})
-            Section:Button({Name = "Save", Callback = function() if Flags["config_Name_text"] == "" then return end writefile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg", Library:GetConfig()) Library:UpdateConfigList() Notifications:Create({Name = "Saved Config (" ..  Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"}) end})
-            Section:Button({Name = "Load", Callback = function() if Flags["config_Name_text"] == "" then return end Library:LoadConfig(readfile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg")) Library:UpdateConfigList() Notifications:Create({Name = "Loaded Config (" ..  Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"}) end})
-            Section:Button({Name = "Delete", Callback = function() if Flags["config_Name_text"] == "" then return end delfile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg") Library:UpdateConfigList() Notifications:Create({Name = "Deleted Config (" ..  Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"}) end})
-
-            local Section = Tab:Section({Name = "Other", Side = "Right"})
-            Section:Label({Name = "Accent Color"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("accent", color) end, Color = themes.preset.accent})
-            Section:Label({Name = "Window Outline"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("window_outline", color) end, Color = themes.preset.window_outline})
-            Section:Label({Name = "Inline Elements"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("inline", color) end, Color = themes.preset.inline})
-            Section:Label({Name = "Main Background"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("background", color) end, Color = themes.preset.background})
-            Section:Label({Name = "Visible Backgrounds"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("visible_backgrounds", color) end, Color = themes.preset.visible_backgrounds})
-            Section:Label({Name = "Text Color"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("text_color", color) end, Color = themes.preset.text_color})
-            Section:Label({Name = "Glow Effect"}):Colorpicker({Callback = function(color, alpha)Library:RefreshTheme("glow", color)end,Color = themes.preset.glow})
-            Section:Label({Name = "Deselected Elements"}):Colorpicker({Callback = function(color, alpha) Library:RefreshTheme("deselected", color) end, Color = themes.preset.deselected})
-
-            window.Tweening = true
-            Section:Label({Name = "Menu Bind"}):Keybind({Name = "Menu Bind", Callback = function(bool) 
-                if window.Tweening then
-                    return 
-                end 
-
-                window.ToggleMenu(bool) 
-            end, Default = true})
-
-            delay(2, function() window.Tweening = false end)
+    local Section = Tab:Section({Name = "Main", Side = "Left"})
+    ConfigHolder = Section:Dropdown({
+        Name = "Configs", 
+        Options = {"Report", "This", "Error", "To", "Finobe"}, 
+        Callback = function(option) 
+            if Text then 
+                Text.Set(option) 
+            end 
+        end, 
+        Flag = "config_Name_list"
+    })
+    Library:UpdateConfigList()
+    
+    Section:Textbox({Name = "Config Name:", Flag = "config_Name_text", default = ""})
+    
+    Section:Button({
+        Name = "Save", 
+        Callback = function() 
+            if Flags["config_Name_text"] == "" then 
+                return 
+            end 
+            writefile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg", Library:GetConfig()) 
+            Library:UpdateConfigList() 
+            Notifications:Create({
+                Name = "Saved Config (" .. Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"
+            }) 
         end
+    })
+    
+    Section:Button({
+        Name = "Load", 
+        Callback = function() 
+            if Flags["config_Name_text"] == "" then 
+                return 
+            end 
+            Library:LoadConfig(readfile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg")) 
+            Library:UpdateConfigList() 
+            Notifications:Create({
+                Name = "Loaded Config (" .. Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"
+            }) 
+        end
+    })
+    
+    Section:Button({
+        Name = "Delete", 
+        Callback = function() 
+            if Flags["config_Name_text"] == "" then 
+                return 
+            end 
+            delfile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg") 
+            Library:UpdateConfigList() 
+            Notifications:Create({
+                Name = "Deleted Config (" .. Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg" .. ")"
+            }) 
+        end
+    })
+
+    local Section = Tab:Section({Name = "Other", Side = "Right"})
+    Section:Label({Name = "Accent Color"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("accent", color) 
+        end, 
+        Color = themes.preset.accent
+    })
+    
+    Section:Label({Name = "Window Outline"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("window_outline", color) 
+        end, 
+        Color = themes.preset.window_outline
+    })
+    
+    Section:Label({Name = "Inline Elements"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("inline", color) 
+        end, 
+        Color = themes.preset.inline
+    })
+    
+    Section:Label({Name = "Main Background"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("background", color) 
+        end, 
+        Color = themes.preset.background
+    })
+    
+    Section:Label({Name = "Visible Backgrounds"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("visible_backgrounds", color) 
+        end, 
+        Color = themes.preset.visible_backgrounds
+    })
+    
+    Section:Label({Name = "Text Color"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("text_color", color) 
+        end, 
+        Color = themes.preset.text_color
+    })
+    
+    Section:Label({Name = "Glow Effect"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("glow", color) 
+        end, 
+        Color = themes.preset.glow
+    })
+    
+    Section:Label({Name = "Deselected Elements"}):Colorpicker({
+        Callback = function(color, alpha) 
+            Library:RefreshTheme("deselected", color) 
+        end, 
+        Color = themes.preset.deselected
+    })
+
+    window.Tweening = true
+    Section:Label({Name = "Menu Bind"}):Keybind({
+        Name = "Menu Bind", 
+        Callback = function(bool) 
+            if window.Tweening then
+                return 
+            end 
+            window.ToggleMenu(bool) 
+        end, 
+        Default = true
+    })
+
+    local ControlGui = Instance.new("ScreenGui")
+    ControlGui.Name = "InfernoControlGui"
+    ControlGui.ResetOnSpawn = false
+    ControlGui.IgnoreGuiInset = true
+    ControlGui.Parent = game:GetService("CoreGui")
+
+    Section:Toggle({
+        Name = "Mobile Support",
+        Flag = "Mobile_Support",
+        Default = true,
+        Callback = function(state)
+            ControlGui.Enabled = state
+        end
+    })
+
+    local themes = {
+        accent = Color3.fromRGB(255, 0, 1),
+        window_outline = Color3.fromRGB(0, 0, 0),
+        inline = Color3.fromRGB(25, 27, 27),
+        background = Color3.fromRGB(17, 19, 19),
+        visible_backgrounds = Color3.fromRGB(20, 23, 22),
+        text_color = Color3.fromRGB(221, 223, 222),
+        glow = Color3.fromRGB(255, 0, 0),
+        deselected = Color3.fromRGB(89, 91, 91),
+    }
+
+    local ButtonContainer = Instance.new("Frame")
+    ButtonContainer.Name = "ButtonContainer"
+    ButtonContainer.Parent = ControlGui
+    ButtonContainer.BackgroundColor3 = themes.visible_backgrounds
+    ButtonContainer.BackgroundTransparency = 0
+    ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+    ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
+    ButtonContainer.AnchorPoint = Vector2.new(1, 0)
+    ButtonContainer.BorderSizePixel = 0
+
+    local Glow = Instance.new("ImageLabel")
+    Glow.Name = "Glow"
+    Glow.Parent = ButtonContainer
+    Glow.Image = "rbxassetid://18245826428"
+    Glow.ImageColor3 = themes.glow
+    Glow.ScaleType = Enum.ScaleType.Slice
+    Glow.SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79))
+    Glow.ImageTransparency = 0.65
+    Glow.BackgroundTransparency = 1
+    Glow.BorderSizePixel = 0
+    Glow.Size = UDim2.new(1, 40, 1, 40)
+    Glow.Position = UDim2.new(0, -20, 0, -20)
+    Glow.ZIndex = -1
+    Glow.AnchorPoint = Vector2.new(0, 0)
+
+    local buttonWidth = 160
+    local buttonHeight = 40
+    local buttonXOffset = 10
+    local buttonYStart = 15
+    local buttonSpacing = 10
+
+    local OpenButton = Instance.new("TextButton")
+    OpenButton.Name = "OpenUIButton"
+    OpenButton.Parent = ButtonContainer
+    OpenButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+    OpenButton.BackgroundColor3 = themes.inline
+    OpenButton.Text = "OPEN UI"
+    OpenButton.Font = Enum.Font.GothamBold
+    OpenButton.TextSize = 16
+    OpenButton.TextColor3 = themes.text_color
+    OpenButton.AutoButtonColor = false
+    OpenButton.ZIndex = 9999
+    OpenButton.BorderSizePixel = 0
+
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Name = "CloseUIButton"
+    CloseButton.Parent = ButtonContainer
+    CloseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+    CloseButton.BackgroundColor3 = themes.inline
+    CloseButton.Text = "CLOSE UI"
+    CloseButton.Font = Enum.Font.GothamBold
+    CloseButton.TextSize = 16
+    CloseButton.TextColor3 = themes.text_color
+    CloseButton.AutoButtonColor = false
+    CloseButton.ZIndex = 9999
+    CloseButton.BorderSizePixel = 0
+
+    local IncreaseButton = Instance.new("TextButton")
+    IncreaseButton.Name = "IncreaseSizeButton"
+    IncreaseButton.Parent = ButtonContainer
+    IncreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+    IncreaseButton.BackgroundColor3 = themes.inline
+    IncreaseButton.Text = "INCREASE SIZE +"
+    IncreaseButton.Font = Enum.Font.GothamBold
+    IncreaseButton.TextSize = 16
+    IncreaseButton.TextColor3 = themes.text_color
+    IncreaseButton.AutoButtonColor = false
+    IncreaseButton.ZIndex = 9999
+    IncreaseButton.BorderSizePixel = 0
+
+    local DecreaseButton = Instance.new("TextButton")
+    DecreaseButton.Name = "DecreaseSizeButton"
+    DecreaseButton.Parent = ButtonContainer
+    DecreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 3)
+    DecreaseButton.BackgroundColor3 = themes.inline
+    DecreaseButton.Text = "DECREASE SIZE -"
+    DecreaseButton.Font = Enum.Font.GothamBold
+    DecreaseButton.TextSize = 16
+    DecreaseButton.TextColor3 = themes.text_color
+    DecreaseButton.AutoButtonColor = false
+    DecreaseButton.ZIndex = 9999
+    DecreaseButton.BorderSizePixel = 0
+
+    local function addCorner(button)
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 8)
+        corner.Parent = button
+    end
+
+    addCorner(OpenButton)
+    addCorner(CloseButton)
+    addCorner(IncreaseButton)
+    addCorner(DecreaseButton)
+
+    local function addHoverEffect(button)
+        local baseColor = button.BackgroundColor3
+        local textBaseColor = button.TextColor3
+        
+        button.MouseEnter:Connect(function()
+            game:GetService("TweenService"):Create(button, TweenInfo.new(0.15), {
+                BackgroundColor3 = themes.background,
+                TextColor3 = themes.accent
+            }):Play()
+        end)
+        
+        button.MouseLeave:Connect(function()
+            game:GetService("TweenService"):Create(button, TweenInfo.new(0.15), {
+                BackgroundColor3 = baseColor,
+                TextColor3 = textBaseColor
+            }):Play()
+        end)
+        
+        button.MouseButton1Down:Connect(function()
+            game:GetService("TweenService"):Create(button, TweenInfo.new(0.1), {
+                BackgroundColor3 = themes.window_outline,
+                TextColor3 = themes.deselected
+            }):Play()
+        end)
+        
+        button.MouseButton1Up:Connect(function()
+            game:GetService("TweenService"):Create(button, TweenInfo.new(0.1), {
+                BackgroundColor3 = themes.background,
+                TextColor3 = themes.accent
+            }):Play()
+        end)
+    end
+
+    addHoverEffect(OpenButton)
+    addHoverEffect(CloseButton)
+    addHoverEffect(IncreaseButton)
+    addHoverEffect(DecreaseButton)
+
+    local function updateButtonPositions()
+        local uiVisible = Library.Items.Enabled
+        
+        if uiVisible then
+            OpenButton.Visible = false
+            CloseButton.Visible = true
+            CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+            IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+            DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+            ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+            Glow.Size = UDim2.new(0, 220, 0, 230)
+        else
+            OpenButton.Visible = true
+            CloseButton.Visible = false
+            OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+            IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+            DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+            ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+            Glow.Size = UDim2.new(0, 220, 0, 230)
+        end
+    end
+
+    local sizeIncrement = 50
+    local minWidth = 400
+    local minHeight = 300
+    local maxWidth = 1000
+    local maxHeight = 800
+
+    local mainWindow = nil
+    local function getMainWindow()
+        if mainWindow then return mainWindow end
+        if window and window.Items and window.Items.Window then
+            mainWindow = window.Items.Window
+        elseif Library and Library.Items and Library.Items.Window then
+            mainWindow = Library.Items.Window
+        else
+            for _, child in ipairs(Library.Items:GetDescendants()) do
+                if child.Name == "Window" then
+                    mainWindow = child
+                    break
+                end
+            end
+        end
+        if not mainWindow then 
+            warn("Could not find main window frame") 
+        end
+        return mainWindow
+    end
+
+    local function adjustSize(widthChange, heightChange)
+        local success, err = pcall(function()
+            local mainWindow = getMainWindow()
+            if not mainWindow then return end
+            local currentSize = mainWindow.Size
+            local newWidth = math.clamp(currentSize.X.Offset + widthChange, minWidth, maxWidth)
+            local newHeight = math.clamp(currentSize.Y.Offset + heightChange, minHeight, maxHeight)
+            mainWindow.Size = UDim2.new(0, newWidth, 0, newHeight)
+            mainWindow.Position = UDim2.new(0.5, -newWidth/2, 0.5, -newHeight/2)
+        end)
+        if not success then 
+            warn("Failed to adjust size:", err) 
+        end
+    end
+
+    OpenButton.MouseButton1Click:Connect(function()
+        if Library.Items.Enabled then return end
+        Library.Items.Enabled = true
+        window.ToggleMenu(true)
+        updateButtonPositions()
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        if not Library.Items.Enabled then return end
+        Library.Items.Enabled = false
+        window.ToggleMenu(false)
+        updateButtonPositions()
+    end)
+
+    IncreaseButton.MouseButton1Click:Connect(function()
+        adjustSize(sizeIncrement, sizeIncrement)
+    end)
+
+    DecreaseButton.MouseButton1Click:Connect(function()
+        adjustSize(-sizeIncrement, -sizeIncrement)
+    end)
+
+    Library.Items:GetPropertyChangedSignal("Enabled"):Connect(updateButtonPositions)
+    updateButtonPositions()
+
+    delay(2, function() 
+        window.Tweening = false 
+    end)
+end
     --
 
     -- Notification Library
