@@ -2673,8 +2673,10 @@ function Library:Configs(window)
         deselected = Color3.fromRGB(89, 91, 91),
     }
 
+    local Text
     local Tab = window:Tab({Name = "Settings"})
 
+    -- Left Side
     do
         local Section = Tab:Section({Name = "Main", Side = "Left"})
 
@@ -2723,9 +2725,11 @@ function Library:Configs(window)
         })
     end
 
+    -- Right Side
     do
         local Section = Tab:Section({Name = "Other", Side = "Right"})
 
+        -- Theme pickers
         local themeList = {
             {"Accent Color", "accent"},
             {"Window Outline", "window_outline"},
@@ -2744,6 +2748,7 @@ function Library:Configs(window)
             })
         end
 
+        -- Keybind for toggling menu
         window.Tweening = true
         Section:Label({Name = "Menu Bind"}):Keybind({
             Name = "Menu Bind",
@@ -2754,26 +2759,18 @@ function Library:Configs(window)
             Default = true
         })
 
+        -- === REPLACED MOBILE SUPPORT TOGGLE UI ===
         local ControlGui = Instance.new("ScreenGui")
         ControlGui.Name = "InfernoControlGui"
         ControlGui.ResetOnSpawn = false
         ControlGui.IgnoreGuiInset = true
         ControlGui.Parent = game:GetService("CoreGui")
 
-        Section:Toggle({
-            Name = "Mobile Support",
-            Flag = "Mobile_Support",
-            Default = true,
-            Callback = function(state)
-                ControlGui.Enabled = state
-            end
-        })
-
         local ButtonContainer = Instance.new("Frame")
         ButtonContainer.Name = "ButtonContainer"
         ButtonContainer.Parent = ControlGui
         ButtonContainer.BackgroundColor3 = themes.visible_backgrounds
-        ButtonContainer.Size = UDim2.new(0, 180, 0, 150)
+        ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
         ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
         ButtonContainer.AnchorPoint = Vector2.new(1, 0)
         ButtonContainer.BorderSizePixel = 0
@@ -2839,6 +2836,11 @@ function Library:Configs(window)
             return button
         end
 
+        local OpenButton = makeButton("OpenUIButton", "OPEN UI", 15)
+        local CloseButton = makeButton("CloseUIButton", "CLOSE UI", 65)
+        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 115)
+        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 165)
+
         local sizeIncrement = 50
         local minWidth, minHeight = 400, 300
         local maxWidth, maxHeight = 1000, 800
@@ -2849,6 +2851,7 @@ function Library:Configs(window)
             for _, child in ipairs(Library.Items:GetDescendants()) do
                 if child.Name == "Window" then return child end
             end
+            warn("Could not find main window frame")
         end
 
         local function adjustSize(wChange, hChange)
@@ -2861,10 +2864,17 @@ function Library:Configs(window)
             main.Position = UDim2.new(0.5, -newW / 2, 0.5, -newH / 2)
         end
 
-        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 10)
-        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 60)
+        OpenButton.MouseButton1Click:Connect(function()
+            if Library.Items.Enabled then return end
+            Library.Items.Enabled = true
+            window.ToggleMenu(true)
+        end)
 
-        local ToggleButton = makeButton("ToggleUIButton", "OPEN UI", 110)
+        CloseButton.MouseButton1Click:Connect(function()
+            if not Library.Items.Enabled then return end
+            Library.Items.Enabled = false
+            window.ToggleMenu(false)
+        end)
 
         IncreaseButton.MouseButton1Click:Connect(function()
             adjustSize(sizeIncrement, sizeIncrement)
@@ -2874,23 +2884,12 @@ function Library:Configs(window)
             adjustSize(-sizeIncrement, -sizeIncrement)
         end)
 
-        ToggleButton.MouseButton1Click:Connect(function()
-            if Library.Items.Enabled then
-                Library.Items.Enabled = false
-                window.ToggleMenu(false)
-                ToggleButton.Text = "OPEN UI"
-            else
-                Library.Items.Enabled = true
-                window.ToggleMenu(true)
-                ToggleButton.Text = "CLOSE UI"
-            end
-        end)
-
         delay(2, function()
             window.Tweening = false
         end)
     end
 end
+
     --
 
     -- Notification Library
