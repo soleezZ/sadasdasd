@@ -2844,24 +2844,14 @@ function Library:Configs(window)
             return button
         end
 
-        local OpenButton = makeButton("OpenUIButton", "OPEN UI", 10, function()
-            if not Library.Items.Enabled then
-                Library.Items.Enabled = true
-                window.ToggleMenu(true)
-            end
+        local ToggleButton = makeButton("ToggleUIButton", "TOGGLE UI", 10, function()
+            Library.Items.Enabled = not Library.Items.Enabled
+            window.ToggleMenu(Library.Items.Enabled)
         end)
 
-        local CloseButton = makeButton("CloseUIButton", "CLOSE UI", 60, function()
-            if Library.Items.Enabled then
-                Library.Items.Enabled = false
-                window.ToggleMenu(false)
-            end
-        end)
-
-        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 110)
-        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 160)
-
-        local SaveButton = makeButton("SaveConfigButton", "SAVE CONFIG", 210, function()
+        local IncreaseButton = makeButton("IncreaseSizeButton", "INCREASE SIZE +", 60)
+        local DecreaseButton = makeButton("DecreaseSizeButton", "DECREASE SIZE -", 110)
+        local SaveButton = makeButton("SaveConfigButton", "SAVE CONFIG", 160, function()
             if Flags["config_Name_text"] == "" then return end
             writefile(Library.Directory .. "/configs/" .. Flags["config_Name_text"] .. ".cfg", Library:GetConfig())
             Library:UpdateConfigList()
