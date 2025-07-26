@@ -2651,488 +2651,6 @@ Items.Input = Library:Create("TextBox", {
                 });	Library:Themify(Items.Title, "text_color", "BackgroundColor3")                                          
             end 
 
-function Library:CreateMobileGUI()
-    if Library.MobileGUI then
-        Library:DestroyMobileGUI()
-    end
-    
-    Library.MobileGUI = Library:Create("ScreenGui", {
-        Parent = CoreGui,
-        Name = "InfernoMobileGUI",
-        Enabled = true,
-        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-        IgnoreGuiInset = true,
-    })
-    
-    local MobileToggle = Library:Create("TextButton", {
-        Parent = Library.MobileGUI,
-        Name = "MobileToggle",
-        Position = UDim2.new(0, 20, 0, 100),
-        Size = UDim2.new(0, 80, 0, 80),
-        BackgroundColor3 = themes.preset.visible_backgrounds,
-        BorderSizePixel = 0,
-        Text = "",
-        AutoButtonColor = false,
-    })
-    
-    Library:Create("UICorner", {
-        Parent = MobileToggle,
-        CornerRadius = UDim.new(0, 12)
-    })
-    
-    local MobileGlow = Library:Create("ImageLabel", {
-        Parent = MobileToggle,
-        Name = "Glow",
-        Image = "rbxassetid://18245826428",
-        ImageColor3 = themes.preset.glow,
-        ScaleType = Enum.ScaleType.Slice,
-        SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79)),
-        ImageTransparency = 0.65,
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Size = UDim2.new(1, 20, 1, 20),
-        Position = UDim2.new(0, -10, 0, -10),
-        ZIndex = -1,
-    })
-    
-    local ToggleIcon = Library:Create("TextLabel", {
-        Parent = MobileToggle,
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Text = "☰",
-        TextColor3 = themes.preset.text_color,
-        TextSize = 32,
-        Font = Enum.Font.GothamBold,
-        TextXAlignment = Enum.TextXAlignment.Center,
-        TextYAlignment = Enum.TextYAlignment.Center,
-    })
-    
-    local MobileContainer = Library:Create("Frame", {
-        Parent = Library.MobileGUI,
-        Name = "MobileContainer",
-        Position = UDim2.new(0, 20, 0, 200),
-        Size = UDim2.new(0, 200, 0, 300),
-        BackgroundColor3 = themes.preset.visible_backgrounds,
-        BorderSizePixel = 0,
-        Visible = false,
-    })
-    
-    Library:Create("UICorner", {
-        Parent = MobileContainer,
-        CornerRadius = UDim.new(0, 12)
-    })
-    
-    Library:Create("ImageLabel", {
-        Parent = MobileContainer,
-        Name = "ContainerGlow",
-        Image = "rbxassetid://18245826428",
-        ImageColor3 = themes.preset.glow,
-        ScaleType = Enum.ScaleType.Slice,
-        SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79)),
-        ImageTransparency = 0.65,
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Size = UDim2.new(1, 20, 1, 20),
-        Position = UDim2.new(0, -10, 0, -10),
-        ZIndex = -1,
-    })
-    
-    Library:Create("UIListLayout", {
-        Parent = MobileContainer,
-        Padding = UDim.new(0, 10),
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        HorizontalAlignment = Enum.HorizontalAlignment.Center,
-    })
-    
-    Library:Create("UIPadding", {
-        Parent = MobileContainer,
-        PaddingTop = UDim.new(0, 15),
-        PaddingBottom = UDim.new(0, 15),
-        PaddingLeft = UDim.new(0, 15),
-        PaddingRight = UDim.new(0, 15),
-    })
-    
-    local function createMobileButton(text, callback)
-        local button = Library:Create("TextButton", {
-            Parent = MobileContainer,
-            Size = UDim2.new(1, 0, 0, 40),
-            BackgroundColor3 = themes.preset.inline,
-            BorderSizePixel = 0,
-            Text = text,
-            TextColor3 = themes.preset.text_color,
-            TextSize = 16,
-            Font = Enum.Font.GothamBold,
-            AutoButtonColor = false,
-        })
-        
-        Library:Create("UICorner", {
-            Parent = button,
-            CornerRadius = UDim.new(0, 8)
-        })
-        
-        button.MouseEnter:Connect(function()
-            Library:Tween(button, {
-                BackgroundColor3 = themes.preset.background,
-                TextColor3 = themes.preset.accent
-            })
-        end)
-        
-        button.MouseLeave:Connect(function()
-            Library:Tween(button, {
-                BackgroundColor3 = themes.preset.inline,
-                TextColor3 = themes.preset.text_color
-            })
-        end)
-        
-        button.MouseButton1Click:Connect(callback)
-        
-        return button
-    end
-    
-    createMobileButton("TOGGLE MENU", function()
-        if Library.Items.Enabled then
-            Library.Items.Enabled = false
-            window.ToggleMenu(false)
-        else
-            Library.Items.Enabled = true
-            window.ToggleMenu(true)
-        end
-    end)
-    
-    createMobileButton("INCREASE SIZE", function()
-        if adjustSize then
-            adjustSize(50, 50)
-        end
-    end)
-    
-    createMobileButton("DECREASE SIZE", function()
-        if adjustSize then
-            adjustSize(-50, -50)
-        end
-    end)
-    
-    createMobileButton("CLOSE MOBILE", function()
-        MobileContainer.Visible = false
-    end)
-    
-    local mobileOpen = false
-    MobileToggle.MouseButton1Click:Connect(function()
-        mobileOpen = not mobileOpen
-        MobileContainer.Visible = mobileOpen
-        
-        Library:Tween(ToggleIcon, {
-            Rotation = mobileOpen and 90 or 0,
-            TextColor3 = mobileOpen and themes.preset.accent or themes.preset.text_color
-        })
-    end)
-    
-    Library:Draggify(MobileToggle)
-    
-    Library.MobileToggle = MobileToggle
-    Library.MobileContainer = MobileContainer
-end
-
-function Library:DestroyMobileGUI()
-    if Library.MobileGUI then
-        Library.MobileGUI:Destroy()
-        Library.MobileGUI = nil
-        Library.MobileToggle = nil
-        Library.MobileContainer = nil
-    end
-end
-
-local originalUnload = Library.Unload
-function Library:Unload()
-    Library:DestroyMobileGUI()
-    originalUnload(self)
-end
-
-
-local ControlGui = Instance.new("ScreenGui")
-ControlGui.Name = "InfernoControlGui"
-ControlGui.ResetOnSpawn = false
-ControlGui.IgnoreGuiInset = true
-ControlGui.Parent = game:GetService("CoreGui")
-
-local themes = {
-    accent = Color3.fromRGB(255, 0, 1),
-    window_outline = Color3.fromRGB(0, 0, 0),
-    inline = Color3.fromRGB(25, 27, 27),
-    background = Color3.fromRGB(17, 19, 19),
-    visible_backgrounds = Color3.fromRGB(20, 23, 22),
-    text_color = Color3.fromRGB(221, 223, 222),
-    glow = Color3.fromRGB(255, 0, 0),
-    deselected = Color3.fromRGB(89, 91, 91),
-}
-
-local ButtonContainer = Instance.new("Frame")
-ButtonContainer.Name = "ButtonContainer"
-ButtonContainer.Parent = ControlGui
-ButtonContainer.BackgroundColor3 = themes.visible_backgrounds -- Updated to match theme
-ButtonContainer.BackgroundTransparency = 0.1
-ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
-ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
-ButtonContainer.AnchorPoint = Vector2.new(1, 0)
-ButtonContainer.BorderSizePixel = 0
-
-local containerCorner = Instance.new("UICorner")
-containerCorner.CornerRadius = UDim.new(0, 12)
-containerCorner.Parent = ButtonContainer
-
-local Glow = Instance.new("ImageLabel")
-Glow.Name = "Glow"
-Glow.Parent = ButtonContainer
-Glow.Image = "rbxassetid://18245826428"
-Glow.ImageColor3 = themes.glow 
-Glow.ScaleType = Enum.ScaleType.Slice
-Glow.SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79))
-Glow.ImageTransparency = 0.65
-Glow.BackgroundTransparency = 1
-Glow.BorderSizePixel = 0
-Glow.Size = UDim2.new(1, 40, 1, 40)
-Glow.Position = UDim2.new(0, -20, 0, -20)
-Glow.ZIndex = -1
-Glow.AnchorPoint = Vector2.new(0, 0)
-
-local buttonWidth = 160
-local buttonHeight = 40
-local buttonXOffset = 10
-local buttonYStart = 15
-local buttonSpacing = 10
-
-local OpenButton = Instance.new("TextButton")
-OpenButton.Name = "OpenUIButton"
-OpenButton.Parent = ButtonContainer
-OpenButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
-OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
-OpenButton.BackgroundColor3 = themes.inline -- Updated to match theme
-OpenButton.Text = "OPEN UI"
-OpenButton.Font = Enum.Font.GothamBold
-OpenButton.TextSize = 16
-OpenButton.TextColor3 = themes.text_color 
-OpenButton.AutoButtonColor = false
-OpenButton.ZIndex = 9999
-OpenButton.BorderSizePixel = 0
-
-local CloseButton = Instance.new("TextButton")
-CloseButton.Name = "CloseUIButton"
-CloseButton.Parent = ButtonContainer
-CloseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
-CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
-CloseButton.BackgroundColor3 = themes.inline 
-CloseButton.Text = "CLOSE UI"
-CloseButton.Font = Enum.Font.GothamBold
-CloseButton.TextSize = 16
-CloseButton.TextColor3 = themes.text_color 
-CloseButton.AutoButtonColor = false
-CloseButton.ZIndex = 9999
-CloseButton.BorderSizePixel = 0
-
-local IncreaseButton = Instance.new("TextButton")
-IncreaseButton.Name = "IncreaseSizeButton"
-IncreaseButton.Parent = ButtonContainer
-IncreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
-IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
-IncreaseButton.BackgroundColor3 = themes.inline 
-IncreaseButton.Text = "INCREASE SIZE +"
-IncreaseButton.Font = Enum.Font.GothamBold
-IncreaseButton.TextSize = 16
-IncreaseButton.TextColor3 = themes.text_color 
-IncreaseButton.AutoButtonColor = false
-IncreaseButton.ZIndex = 9999
-IncreaseButton.BorderSizePixel = 0
-
-local DecreaseButton = Instance.new("TextButton")
-DecreaseButton.Name = "DecreaseSizeButton"
-DecreaseButton.Parent = ButtonContainer
-DecreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
-DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 3)
-DecreaseButton.BackgroundColor3 = themes.inline -- Updated to match theme
-DecreaseButton.Text = "DECREASE SIZE -"
-DecreaseButton.Font = Enum.Font.GothamBold
-DecreaseButton.TextSize = 16
-DecreaseButton.TextColor3 = themes.text_color
-DecreaseButton.AutoButtonColor = false
-DecreaseButton.ZIndex = 9999
-DecreaseButton.BorderSizePixel = 0
-
-local cornerRadius = 8
-local function addCorner(button)
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, cornerRadius)
-    corner.Parent = button
-end
-
-addCorner(OpenButton)
-addCorner(CloseButton)
-addCorner(IncreaseButton)
-addCorner(DecreaseButton)
-
-local function addHoverEffect(button)
-    local baseColor = button.BackgroundColor3
-    local textBaseColor = button.TextColor3
-    
-    button.MouseEnter:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.15),
-            {
-                BackgroundColor3 = themes.background, 
-                TextColor3 = themes.accent 
-            }
-        ):Play()
-    end)
-    
-    button.MouseLeave:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.15),
-            {
-                BackgroundColor3 = baseColor,
-                TextColor3 = textBaseColor
-            }
-        ):Play()
-    end)
-    
-    button.MouseButton1Down:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.1),
-            {
-                BackgroundColor3 = themes.window_outline, 
-                TextColor3 = themes.deselected
-            }
-        ):Play()
-    end)
-    
-    button.MouseButton1Up:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.1),
-            {
-                BackgroundColor3 = themes.background, 
-                TextColor3 = themes.accent
-            }
-        ):Play()
-    end)
-end
-
-addHoverEffect(OpenButton)
-addHoverEffect(CloseButton)
-addHoverEffect(IncreaseButton)
-addHoverEffect(DecreaseButton)
-
-local function updateButtonPositions()
-    local uiVisible = Library.Items.Enabled
-    
-    if uiVisible then
-        OpenButton.Visible = false
-        CloseButton.Visible = true
-        
-        CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
-        IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
-        DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
-        
-        ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
-        Glow.Size = UDim2.new(0, 220, 0, 230)
-    else
-        OpenButton.Visible = true
-        CloseButton.Visible = false
-        
-        OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
-        IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
-        DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
-        
-        ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
-        Glow.Size = UDim2.new(0, 220, 0, 230)
-    end
-end
-
-local sizeIncrement = 50
-local minWidth = 400
-local minHeight = 300
-local maxWidth = 1000
-local maxHeight = 800
-
-local mainWindow = nil
-local function getMainWindow()
-    if mainWindow then return mainWindow end
-    
-    if window and window.Items and window.Items.Window then
-        mainWindow = window.Items.Window
-    elseif Library and Library.Items and Library.Items.Window then
-        mainWindow = Library.Items.Window
-    else
-        for _, child in ipairs(Library.Items:GetDescendants()) do
-            if child.Name == "Window" then
-                mainWindow = child
-                break
-            end
-        end
-    end
-    
-    if not mainWindow then
-        warn("Could not find main window frame")
-        return nil
-    end
-    
-    return mainWindow
-end
-
-local function adjustSize(widthChange, heightChange)
-    local success, err = pcall(function()
-        local mainWindow = getMainWindow()
-        if not mainWindow then return end
-        
-        local currentSize = mainWindow.Size
-        local newWidth = math.clamp(currentSize.X.Offset + widthChange, minWidth, maxWidth)
-        local newHeight = math.clamp(currentSize.Y.Offset + heightChange, minHeight, maxHeight)
-        
-        mainWindow.Size = UDim2.new(0, newWidth, 0, newHeight)
-        mainWindow.Position = UDim2.new(0.5, -newWidth/2, 0.5, -newHeight/2)
-    end)
-    
-    if not success then
-        warn("Failed to adjust size:", err)
-    end
-end
-
-OpenButton.MouseButton1Click:Connect(function()
-    if Library.Items.Enabled then return end
-    Library.Items.Enabled = true
-    window.ToggleMenu(true)
-    updateButtonPositions()
-end)
-
-CloseButton.MouseButton1Click:Connect(function()
-    if not Library.Items.Enabled then return end
-    Library.Items.Enabled = false
-    window.ToggleMenu(false)
-    updateButtonPositions()
-end)
-
-IncreaseButton.MouseButton1Click:Connect(function()
-    adjustSize(sizeIncrement, sizeIncrement)
-end)
-
-DecreaseButton.MouseButton1Click:Connect(function()
-    adjustSize(-sizeIncrement, -sizeIncrement)
-end)
-
-Library.Items:GetPropertyChangedSignal("Enabled"):Connect(updateButtonPositions)
-updateButtonPositions()
-
-
-            Items.Outline.MouseButton1Click:Connect(function()
-                Items.Title.TextColor3 = rgb(255, 255, 255)
-                Library:Tween(Items.Title, {TextColor3 = themes.preset.text_color})
-                
-                Cfg.Callback()
-            end)
-            
-            return setmetatable(Cfg, Library)
-        end
-
 function Library:Configs(window)
     local Text;
     local Tab = window:Tab({
@@ -3258,7 +2776,6 @@ function Library:Configs(window)
         Default = true
     })
     
-    -- NEW: Mobile GUI Toggle
     Section:Toggle({
         Name = "Mobile GUI",
         Flag = "mobile_gui_enabled",
@@ -3277,6 +2794,280 @@ function Library:Configs(window)
     delay(2, function() 
         window.Tweening = false 
     end)
+end
+
+function Library:CreateMobileGUI()
+    if self.MobileGUI then return end
+    
+    local ControlGui = Instance.new("ScreenGui")
+    ControlGui.Name = "InfernoControlGui"
+    ControlGui.ResetOnSpawn = false
+    ControlGui.IgnoreGuiInset = true
+    ControlGui.Parent = game:GetService("CoreGui")
+
+    -- Container for all buttons
+    local ButtonContainer = Instance.new("Frame")
+    ButtonContainer.Name = "ButtonContainer"
+    ButtonContainer.Parent = ControlGui
+    ButtonContainer.BackgroundColor3 = themes.preset.visible_backgrounds
+    ButtonContainer.BackgroundTransparency = 0.1
+    ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+    ButtonContainer.Position = UDim2.new(1, -200, 0, 20)
+    ButtonContainer.AnchorPoint = Vector2.new(1, 0)
+    ButtonContainer.BorderSizePixel = 0
+
+    -- Add rounded corners to container
+    local containerCorner = Instance.new("UICorner")
+    containerCorner.CornerRadius = UDim.new(0, 12)
+    containerCorner.Parent = ButtonContainer
+
+    -- Glow effect (matching theme)
+    local Glow = Instance.new("ImageLabel")
+    Glow.Name = "Glow"
+    Glow.Parent = ButtonContainer
+    Glow.Image = "rbxassetid://18245826428"
+    Glow.ImageColor3 = themes.preset.glow
+    Glow.ScaleType = Enum.ScaleType.Slice
+    Glow.SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79))
+    Glow.ImageTransparency = 0.65
+    Glow.BackgroundTransparency = 1
+    Glow.BorderSizePixel = 0
+    Glow.Size = UDim2.new(1, 40, 1, 40)
+    Glow.Position = UDim2.new(0, -20, 0, -20)
+    Glow.ZIndex = -1
+    Glow.AnchorPoint = Vector2.new(0, 0)
+
+    -- Button parameters
+    local buttonWidth = 160
+    local buttonHeight = 40
+    local buttonXOffset = 10
+    local buttonYStart = 15
+    local buttonSpacing = 10
+
+    -- Create Open Button
+    local OpenButton = Instance.new("TextButton")
+    OpenButton.Name = "OpenUIButton"
+    OpenButton.Parent = ButtonContainer
+    OpenButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+    OpenButton.BackgroundColor3 = themes.preset.inline
+    OpenButton.Text = "OPEN UI"
+    OpenButton.Font = Enum.Font.GothamBold
+    OpenButton.TextSize = 16
+    OpenButton.TextColor3 = themes.preset.text_color
+    OpenButton.AutoButtonColor = false
+    OpenButton.ZIndex = 9999
+    OpenButton.BorderSizePixel = 0
+
+    -- Create Close Button
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Name = "CloseUIButton"
+    CloseButton.Parent = ButtonContainer
+    CloseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+    CloseButton.BackgroundColor3 = themes.preset.inline
+    CloseButton.Text = "CLOSE UI"
+    CloseButton.Font = Enum.Font.GothamBold
+    CloseButton.TextSize = 16
+    CloseButton.TextColor3 = themes.preset.text_color
+    CloseButton.AutoButtonColor = false
+    CloseButton.ZIndex = 9999
+    CloseButton.BorderSizePixel = 0
+
+    -- Create Increase Size Button
+    local IncreaseButton = Instance.new("TextButton")
+    IncreaseButton.Name = "IncreaseSizeButton"
+    IncreaseButton.Parent = ButtonContainer
+    IncreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+    IncreaseButton.BackgroundColor3 = themes.preset.inline
+    IncreaseButton.Text = "INCREASE SIZE +"
+    IncreaseButton.Font = Enum.Font.GothamBold
+    IncreaseButton.TextSize = 16
+    IncreaseButton.TextColor3 = themes.preset.text_color
+    IncreaseButton.AutoButtonColor = false
+    IncreaseButton.ZIndex = 9999
+    IncreaseButton.BorderSizePixel = 0
+
+    -- Create Decrease Size Button
+    local DecreaseButton = Instance.new("TextButton")
+    DecreaseButton.Name = "DecreaseSizeButton"
+    DecreaseButton.Parent = ButtonContainer
+    DecreaseButton.Size = UDim2.new(0, buttonWidth, 0, buttonHeight)
+    DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 3)
+    DecreaseButton.BackgroundColor3 = themes.preset.inline
+    DecreaseButton.Text = "DECREASE SIZE -"
+    DecreaseButton.Font = Enum.Font.GothamBold
+    DecreaseButton.TextSize = 16
+    DecreaseButton.TextColor3 = themes.preset.text_color
+    DecreaseButton.AutoButtonColor = false
+    DecreaseButton.ZIndex = 9999
+    DecreaseButton.BorderSizePixel = 0
+
+    -- Add rounded corners to all buttons
+    local cornerRadius = 8
+    local function addCorner(button)
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, cornerRadius)
+        corner.Parent = button
+    end
+
+    addCorner(OpenButton)
+    addCorner(CloseButton)
+    addCorner(IncreaseButton)
+    addCorner(DecreaseButton)
+
+    -- Add hover effects to all buttons
+    local function addHoverEffect(button)
+        local baseColor = button.BackgroundColor3
+        local textBaseColor = button.TextColor3
+        
+        button.MouseEnter:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.15),
+                {
+                    BackgroundColor3 = themes.preset.background,
+                    TextColor3 = themes.preset.accent
+                }
+            ):Play()
+        end)
+        
+        button.MouseLeave:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.15),
+                {
+                    BackgroundColor3 = baseColor,
+                    TextColor3 = textBaseColor
+                }
+            ):Play()
+        end)
+        
+        button.MouseButton1Down:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.1),
+                {
+                    BackgroundColor3 = themes.preset.window_outline,
+                    TextColor3 = themes.preset.deselected
+                }
+            ):Play()
+        end)
+        
+        button.MouseButton1Up:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.1),
+                {
+                    BackgroundColor3 = themes.preset.background,
+                    TextColor3 = themes.preset.accent
+                }
+            ):Play()
+        end)
+    end
+
+    addHoverEffect(OpenButton)
+    addHoverEffect(CloseButton)
+    addHoverEffect(IncreaseButton)
+    addHoverEffect(DecreaseButton)
+
+    -- Dynamic button positioning function
+    local function updateButtonPositions()
+        local uiVisible = self.Items.Enabled
+        
+        if uiVisible then
+            -- UI is open - show close button, hide open button
+            OpenButton.Visible = false
+            CloseButton.Visible = true
+            
+            -- Move close button to top position (where open button was)
+            CloseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+            -- Move other buttons up to eliminate gap
+            IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+            DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+            
+            -- Adjust container and glow size to fit 3 buttons
+            ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+            Glow.Size = UDim2.new(0, 220, 0, 230)
+        else
+            -- UI is closed - show open button, hide close button
+            OpenButton.Visible = true
+            CloseButton.Visible = false
+            
+            -- Move open button to top, move other buttons up to eliminate gap where close button was
+            OpenButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart)
+            IncreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + buttonHeight + buttonSpacing)
+            DecreaseButton.Position = UDim2.new(0, buttonXOffset, 0, buttonYStart + (buttonHeight + buttonSpacing) * 2)
+            
+            -- Adjust container and glow size to fit 3 buttons (no gap)
+            ButtonContainer.Size = UDim2.new(0, 180, 0, 190)
+            Glow.Size = UDim2.new(0, 220, 0, 230)
+        end
+    end
+
+    -- Size adjustment parameters
+    local sizeIncrement = 50
+    local minWidth = 400
+    local minHeight = 300
+    local maxWidth = 1000
+    local maxHeight = 800
+
+    -- Size adjustment function with error handling
+    local function adjustSize(widthChange, heightChange)
+        local success, err = pcall(function()
+            local mainWindow = self.Items.Window
+            if not mainWindow then return end
+            
+            local currentSize = mainWindow.Size
+            local newWidth = math.clamp(currentSize.X.Offset + widthChange, minWidth, maxWidth)
+            local newHeight = math.clamp(currentSize.Y.Offset + heightChange, minHeight, maxHeight)
+            
+            -- Apply new size
+            mainWindow.Size = UDim2.new(0, newWidth, 0, newHeight)
+            mainWindow.Position = UDim2.new(0.5, -newWidth/2, 0.5, -newHeight/2)
+        end)
+        
+        if not success then
+            warn("Failed to adjust size:", err)
+        end
+    end
+
+    -- Button actions
+    OpenButton.MouseButton1Click:Connect(function()
+        if self.Items.Enabled then return end
+        self.Items.Enabled = true
+        window.ToggleMenu(true)
+        updateButtonPositions()
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        if not self.Items.Enabled then return end
+        self.Items.Enabled = false
+        window.ToggleMenu(false)
+        updateButtonPositions()
+    end)
+
+    IncreaseButton.MouseButton1Click:Connect(function()
+        adjustSize(sizeIncrement, sizeIncrement)
+    end)
+
+    DecreaseButton.MouseButton1Click:Connect(function()
+        adjustSize(-sizeIncrement, -sizeIncrement)
+    end)
+
+    -- Initialize
+    self.Items:GetPropertyChangedSignal("Enabled"):Connect(updateButtonPositions)
+    updateButtonPositions()
+    
+    self.MobileGUI = ControlGui
+end
+
+function Library:DestroyMobileGUI()
+    if self.MobileGUI then
+        self.MobileGUI:Destroy()
+        self.MobileGUI = nil
+    end
 end
 
     --
