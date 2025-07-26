@@ -2797,14 +2797,14 @@ function Library:Configs(window)
     ControlGui.IgnoreGuiInset = true
     ControlGui.Parent = game:GetService("CoreGui")
 
-    Section:Toggle({
-        Name = "Mobile Support",
-        Flag = "Mobile_Support",
-        Default = true,
-        Callback = function(state)
-            ControlGui.Enabled = state
-        end
-    })
+Section:Toggle({
+    Name = "Mobile Support",  -- Make sure it's "Name" not "name"
+    Flag = "Mobile_Support",
+    Default = true,
+    Callback = function(state)
+        ControlGui.Enabled = state
+    end
+})
 
     local themes = {
         accent = Color3.fromRGB(255, 0, 1),
