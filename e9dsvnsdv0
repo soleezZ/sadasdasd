@@ -1,3 +1,10 @@
+--[[
+
+    XEZIOS
+    -> Made by @finobe 
+    -> Kind of got bored idk what to do with life
+]]
+
 if getgenv().Loaded then 
     getgenv().Library:Unload()
 end 
@@ -33,13 +40,13 @@ getgenv().Loaded = true
 
     local themes = {
         preset = {
-            accent = rgb(255, 0, 1),
+            accent = rgb(108, 109, 152),
             window_outline = rgb(0, 0, 0),
             inline = rgb(25, 27, 27),
             background = rgb(17, 19, 19),
             visible_backgrounds = rgb(20, 23, 22),
             text_color = rgb(221, 223, 222),
-            glow = rgb(255, 0, 0),  -- Pure red
+            glow = rgb(0, 0, 0),
             deselected = rgb(89, 91, 91),
         },
         utility = {},
@@ -120,7 +127,7 @@ getgenv().Loaded = true
         makefolder(Library.Directory .. path)
     end
 
-    local Flags = Library.Flags
+    local Flags = Library.Flags 
     local ConfigFlags = Library.ConfigFlags
     local Notifications = Library.Notifications 
 --
@@ -355,9 +362,9 @@ getgenv().Loaded = true
 
         function Library:Keypicker(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or "Color", 
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '' or "Colorpicker",
-                Callback = properties.callback or properties.Callback or function() end,
+                Name = properties.Name or "Color", 
+                Flag = properties.Flag or properties.Name or "Colorpicker",
+                Callback = properties.Callback or function() end,
 
                 Color = properties.Color or color(1, 1, 1), -- Default to white color if not provided
                 Alpha = properties.Alpha or properties.Transparency or 0,
@@ -804,9 +811,7 @@ getgenv().Loaded = true
 
                 Flags[Cfg.Flag] = {
                     Color = Color;
-                    color = Color;
-                    Transparency = a;
-                    transparency = a;
+                    Transparency = a 
                 }
                 
                 local Color = Items.ButtonColor.BackgroundColor3 -- Overwriting to format<<
@@ -900,25 +905,25 @@ getgenv().Loaded = true
         end 
 
         function Library:GetConfig()
-            local g = {}
+            local Config = {}
             
             for Idx, Value in Flags do
                 if type(Value) == "table" and Value.key then
-                    g[Idx] = {active = Value.Active, mode = Value.Mode, key = tostring(Value.Key)}
+                    Config[Idx] = {active = Value.Active, mode = Value.Mode, key = tostring(Value.Key)}
                 elseif type(Value) == "table" and Value["Transparency"] and Value["Color"] then
-                    g[Idx] = {Transparency = Value["Transparency"], Color = Value["Color"]:ToHex()}
+                    Config[Idx] = {Transparency = Value["Transparency"], Color = Value["Color"]:ToHex()}
                 else
-                    g[Idx] = Value
+                    Config[Idx] = Value
                 end
             end 
 
-            return HttpService:JSONEncode(g)
+            return HttpService:JSONEncode(Config)
         end
 
         function Library:LoadConfig(JSON) 
-            local g = HttpService:JSONDecode(JSON)
+            local Config = HttpService:JSONDecode(JSON)
             
-            for Idx, Value in g do                
+            for Idx, Value in Config do                
                 if Idx == "config_name_list" then 
                     continue 
                 end
@@ -1026,8 +1031,8 @@ getgenv().Loaded = true
     -- Library element functions
         function Library:Window(properties)
             local Cfg = {
-                Prefix = properties.Prefix or "inferno.";
-                Suffix = properties.Suffix or "wtf";
+                Prefix = properties.Prefix or "XEZIOS";
+                Suffix = properties.Suffix or "PRIME";
                 Size = properties.Size or dim2(0, 620, 0, 471);
                 TabInfo;
                 Items = {};
@@ -1156,7 +1161,7 @@ getgenv().Loaded = true
                     Parent = Items.TitleHolder;
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = '<font color = "rgb(255,255,255)">' .. Cfg.Prefix .. '</font>' .. Cfg.Suffix .. '';
+                    Text = '<font color = "rgb(255,255,255)">' .. Cfg.Prefix .. '</font> ' .. Cfg.Suffix .. '';
                     Name = "\0";
                     AutomaticSize = Enum.AutomaticSize.XY;
                     AnchorPoint = vec2(0, 0.5);
@@ -1198,7 +1203,7 @@ getgenv().Loaded = true
                 });	Library:Themify(Items.Fade, "background", "BackgroundColor3")                
                 
                 Items.Glow = Library:Create( "ImageLabel" , {
-                    ImageColor3 = rgb(255, 0, 0);
+                    ImageColor3 = rgb(0, 0, 0);
                     ScaleType = Enum.ScaleType.Slice;
                     ImageTransparency = 0.6499999761581421;
                     BorderColor3 = rgb(0, 0, 0);
@@ -1268,7 +1273,7 @@ getgenv().Loaded = true
 
         function Library:Tab(properties)
             local Cfg = {
-                Name = properties.Name or properties.name or properties.Name or "visuals"; 
+                Name = properties.name or properties.Name or "visuals"; 
                 Icon = properties.Icon or properties.icon or "rbxassetid://112730572155522";
                 Items = {};
             }
@@ -1468,7 +1473,7 @@ getgenv().Loaded = true
 
         function Library:Section(properties)
             local Cfg = {
-                Name = properties.Name or properties.name or "Section"; 
+                Name = properties.name or properties.Name or "Section"; 
                 Side = properties.side or properties.Side or "Left";
 
                 -- Fill settings 
@@ -1477,11 +1482,6 @@ getgenv().Loaded = true
                 -- Other
                 Items = {};
             };
-            if Cfg.Side == 'left' then
-                Cfg.Side = "Left";
-            elseif Cfg.Side == 'right' then
-                Cfg.Side = "Right";
-            end
             
             local Items = Cfg.Items; do
                 Items.Section = Library:Create( "Frame" , {
@@ -1571,10 +1571,10 @@ getgenv().Loaded = true
 
         function Library:Toggle(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or "Toggle";
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '' or "Toggle";
-                Enabled = properties.Default or properties.default or false;
-                Callback = properties.callback or properties.Callback or function() end;
+                Name = properties.Name or "Toggle";
+                Flag = properties.Flag or properties.Name or "Toggle";
+                Enabled = properties.Default or false;
+                Callback = properties.callback or function() end;
 
                 -- Sub / Group Section
                 Folding = properties.Folding or false;
@@ -1686,7 +1686,7 @@ getgenv().Loaded = true
             function Cfg.Set(bool)
                 Flags[Cfg.Flag] = bool
 
-                Cfg.Callback(bool or false)
+                Cfg.Callback(bool)
 
                 Library:Tween(Items.ToggleComponent, {BackgroundColor3 = bool and themes.preset.accent or themes.preset.inline})
                 Library:Tween(Items.Inline, {BackgroundColor3 = bool and themes.preset.accent or themes.preset.background})
@@ -1698,7 +1698,7 @@ getgenv().Loaded = true
                 Cfg.Set(Cfg.Enabled)
             end)
 
-            Cfg.Set(Cfg.Default or false)
+            Cfg.Set(Cfg.Default)
 
             ConfigFlags[Cfg.Flag] = Cfg.Set
 
@@ -1707,16 +1707,16 @@ getgenv().Loaded = true
         
         function Library:Slider(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or '',
-                Suffix = properties.Suffix or properties.suffix or "",
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '',
-                Callback = properties.callback or properties.Callback or function() end, 
+                Name = properties.Name,
+                Suffix = properties.Suffix or "",
+                Flag = properties.Flag or properties.Name or "Slider",
+                Callback = properties.Callback or function() end, 
 
                 -- Value Settings
-                Min = properties.Min or properties.min or 0,
-                Max = properties.Max or properties.max or 100,
-                Intervals = properties.Decimal or properties.decimal or 1,
-                Value = properties.Default or properties.default or 10,
+                Min = properties.Min or 0,
+                Max = properties.Max or 100,
+                Intervals = properties.Decimal or 1,
+                Value = properties.Default or 10, 
 
                 -- Other
                 Dragging = false,
@@ -1858,12 +1858,12 @@ getgenv().Loaded = true
 
         function Library:Dropdown(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or '';
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '';
-                Options = properties.Options or properties.options or properties.items or {""};
-                Callback = properties.callback or properties.Callback or function() end;
-                Multi = properties.Multi or properties.multi or false;
-                Scrolling = properties.Scrolling or properties.scrolling or false;
+                Name = properties.Name or nil;
+                Flag = properties.Flag or properties.Name or "Dropdown";
+                Options = properties.Options or {""};
+                Callback = properties.Callback or function() end;
+                Multi = properties.Multi or false;
+                Scrolling = properties.Scrolling or false;
 
                 -- Ignore these 
                 Open = false;
@@ -1874,7 +1874,7 @@ getgenv().Loaded = true
                 Ignore = properties.Ignore or false;
             }   
 
-            Cfg.Default = properties.Default or properties.default or (Cfg.Multi and {Cfg.Items[1]}) or Cfg.Items[1] or "None"
+            Cfg.Default = properties.Default or (Cfg.Multi and {Cfg.Items[1]}) or Cfg.Items[1] or "None"
             Flags[Cfg.Flag] = Cfg.Default
             
             local Items = Cfg.Items; do 
@@ -2119,7 +2119,7 @@ getgenv().Loaded = true
 
         function Library:Label(properties)
             local Cfg = {
-                Name = properties.Name or properties.name or "Label",
+                Name = properties.Name or "Label",
 
                 -- Other
                 Items = {};
@@ -2181,12 +2181,12 @@ getgenv().Loaded = true
         
         function Library:Colorpicker(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or "Color", 
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '' or "Colorpicker",
-                Callback = properties.callback or properties.Callback or function() end,
+                Name = properties.Name or "Color", 
+                Flag = properties.Flag or properties.Name or "Colorpicker",
+                Callback = properties.Callback or function() end,
 
-                Color = properties.Color or properties.color or color(1, 1, 1), -- Default to white color if not provided
-                Alpha = properties.Alpha or properties.Transparency or properties.alpha or properties.transparency or 0,
+                Color = properties.Color or color(1, 1, 1), -- Default to white color if not provided
+                Alpha = properties.Alpha or properties.Transparency or 0,
                 
                 -- Other
                 Open = false;
@@ -2206,17 +2206,16 @@ getgenv().Loaded = true
             return setmetatable(Cfg, Library)
         end 
 
-function Library:Textbox(properties) 
-    local Cfg = {
-        Name = properties.Name or "TextBox",
-        PlaceHolder = properties.PlaceHolder or properties.PlaceHolderText or properties.Holder or properties.HolderText or "Type here...",
-        Default = properties.Default or "",
-        Flag = properties.Flag or properties.Name or "TextBox",
-        Callback = properties.Callback or function() end,
-        
-        Items = {};
-    }
-
+        function Library:Textbox(properties) 
+            local Cfg = {
+                Name = properties.Name or "TextBox",
+                PlaceHolder = properties.PlaceHolder or properties.PlaceHolderText or properties.Holder or properties.HolderText or "Type here...",
+                Default = properties.Default or "",
+                Flag = properties.Flag or properties.Name or "TextBox",
+                Callback = properties.Callback or function() end,
+                
+                Items = {};
+            }
 
             Flags[Cfg.Flag] = Cfg.default
 
@@ -2268,27 +2267,25 @@ function Library:Textbox(properties)
                     BackgroundColor3 = rgb(31, 31, 31)
                 });
                 
-Items.Input = Library:Create("TextBox", {
-    Parent = Items.Inline;
-    FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
-    Name = "\0";
-    Active = false;
-    BorderColor3 = rgb(0, 0, 0);
-    Text = tostring(Cfg.Default or "");
-    PlaceholderText = tostring(Cfg.PlaceHolder or "Type here...");
-    Size = dim2(1, 0, 1, 0);
-    Selectable = false;
-    Position = dim2(0, 3, 0, 0);
-    BorderSizePixel = 0;
-    TextTruncate = Enum.TextTruncate.AtEnd;
-    BackgroundTransparency = 1;
-    TextXAlignment = Enum.TextXAlignment.Left;
-    AutomaticSize = Enum.AutomaticSize.XY;
-    TextColor3 = rgb(239, 239, 239);
-    TextSize = 14;
-    BackgroundColor3 = rgb(255, 255, 255);
-});
-                  
+                Items.Input = Library:Create( "TextBox" , {
+                    Parent = Items.Inline;
+                    FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+                    Name = "\0";
+                    Active = false;
+                    BorderColor3 = rgb(0, 0, 0);
+                    Text = "hello theree!!";
+                    Size = dim2(1, 0, 1, 0);
+                    Selectable = false;
+                    Position = dim2(0, 3, 0, 0);
+                    BorderSizePixel = 0;
+                    TextTruncate = Enum.TextTruncate.AtEnd;
+                    BackgroundTransparency = 1;
+                    TextXAlignment = Enum.TextXAlignment.Left;
+                    AutomaticSize = Enum.AutomaticSize.XY;
+                    TextColor3 = rgb(239, 239, 239);
+                    TextSize = 14;
+                    BackgroundColor3 = rgb(255, 255, 255)
+                });                    
             end 
             
             function Cfg.Set(text) 
@@ -2314,13 +2311,13 @@ Items.Input = Library:Create("TextBox", {
 
         function Library:Keybind(properties) 
             local Cfg = {
-                Flag = properties.Flag or properties.flag or properties.Name or properties.name or '';
-                Callback = properties.callback or properties.Callback or function() end;
-                Name = properties.Name or properties.name or nil; 
+                Flag = properties.Flag or properties.Name;
+                Callback = properties.Callback or function() end;
+                Name = properties.Name or nil; 
 
                 Key = properties.Key or nil;
                 Mode = properties.Mode or "Toggle";
-                Active = properties.Default or properties.default or false; 
+                Active = properties.Default or false; 
                 
                 Open = false;
                 Binding;
@@ -2331,11 +2328,8 @@ Items.Input = Library:Create("TextBox", {
 
             Flags[Cfg.Flag] = {
                 Mode = Cfg.Mode,
-                mode = Cfg.Mode,
                 Key = Cfg.Key, 
-                key = Cfg.Key, 
-                Active = Cfg.Active,
-                active = Cfg.Active
+                Active = Cfg.Active
             }
 
             local Items = Cfg.Items; do 
@@ -2509,11 +2503,8 @@ Items.Input = Library:Create("TextBox", {
 
                 Flags[Cfg.Flag] = {
                     mode = Cfg.Mode,
-                    Mode = Cfg.Mode,
                     key = Cfg.Key, 
-                    Key = Cfg.Key,
-                    active = Cfg.Active,
-                    Active = Cfg.Active
+                    active = Cfg.Active
                 }
             end
 
@@ -2591,8 +2582,8 @@ Items.Input = Library:Create("TextBox", {
         
         function Library:Button(properties) 
             local Cfg = {
-                Name = properties.Name or properties.name or "TextBox",
-                Callback = properties.callback or properties.Callback or function() end,
+                Name = properties.Name or "TextBox",
+                Callback = properties.Callback or function() end,
                  
                 -- Other
                 Items = {};
@@ -2650,6 +2641,17 @@ Items.Input = Library:Create("TextBox", {
                     BackgroundColor3 = rgb(255, 255, 255)
                 });	Library:Themify(Items.Title, "text_color", "BackgroundColor3")                                          
             end 
+
+            Items.Outline.MouseButton1Click:Connect(function()
+                Items.Title.TextColor3 = rgb(255, 255, 255)
+                Library:Tween(Items.Title, {TextColor3 = themes.preset.text_color})
+                
+                Cfg.Callback()
+            end)
+            
+            return setmetatable(Cfg, Library)
+        end
+
         function Library:Configs(window) 
             local Text;
             local Tab = window:Tab({Name = "Settings"})
@@ -2682,8 +2684,6 @@ Items.Input = Library:Create("TextBox", {
 
             delay(2, function() window.Tweening = false end)
         end
-
-
     --
 
     -- Notification Library
@@ -2723,7 +2723,7 @@ Items.Input = Library:Create("TextBox", {
         
         function Notifications:Create(properties)
             local Cfg = {
-                Name = properties.Name or properties.name or "This is a title!";
+                Name = properties.Name or "This is a title!";
                 Lifetime = properties.LifeTime or 3;
                 
                 Items = {};
@@ -2802,5 +2802,7 @@ Items.Input = Library:Create("TextBox", {
                 Items.Outline:Destroy() 
             end)
         end
+    --
+-- 
 
 return Library, Flags
