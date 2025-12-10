@@ -3041,8 +3041,8 @@ function Library:CreateWindow(...)
     local daySuffix = getDaySuffix(day)
 
     local titleParts = {
-        {text = "Crack", color = Color3.fromRGB(255, 255, 255)},
-        {text = "Hub", color = Color3.fromRGB(5, 95, 210)},
+        {text = "Apex.", color = Color3.fromRGB(255, 255, 255)},
+        {text = "lol", color = Color3.fromRGB(5, 95, 210)},
         {text = "  |  ", color = Color3.fromRGB(255, 255, 255)},
         {text = "Premium", color = Color3.fromRGB(5, 95, 210)},
         {text = "  |  South Bronx", color = Color3.fromRGB(255, 255, 255)},
